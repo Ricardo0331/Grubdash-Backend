@@ -61,7 +61,7 @@ function destroy(req, res) {
 //validate new order data
 function validateOrderData(req, res, next) {
     const { data = {} } = req.body;
-    const { deliverTo, mobileNumber, dishes } = data; 
+    const { deliverTo, mobileNumber, dishes, status } = data; 
 
     if (!deliverTo) {
         return next({ status: 400, message: "Order must inclue a deliverTo" });
@@ -86,9 +86,31 @@ function validateOrderData(req, res, next) {
     }
 
 
+    //validate status 
+    if (!status) {
+        return next({ status: 400, message: "Order must have a status of pending, preparing, out-for-delivery, delivered" });
+    }
+    if (!["pending", "preparing", "out-for-delivery", "delivered"].includes(status)) {
+        return next({ status: 400, message: "Order must have a status of pending, preparing, out-for-delivery, delivered" });
+    }
+
+
     //if all validations pass, move on the next middleware 
     next();
 }
+
+
+
+//check if an existing order can be updated or deleted
+function validateOrderStatus(req, res, next) {
+    const {  status } = res.locals.order;
+    if (status === "delivered") {
+        return next({ status: 400, message: "A delivered order cannot be changed" });
+    }
+    next();
+}
+
+
 
 
 
@@ -109,5 +131,7 @@ module.exports = {
     update,
     destroy,
     orderExist,
+    validateOrderData,
+    validateOrderStatus,
 
 }; 
