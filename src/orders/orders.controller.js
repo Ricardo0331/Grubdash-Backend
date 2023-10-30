@@ -58,6 +58,48 @@ function destroy(req, res) {
 };
 
 
+//validate new order data
+function validateOrderData(req, res, next) {
+    const { data = {} } = req.body;
+    const { deliverTo, mobileNumber, dishes } = data; 
+
+    if (!deliverTo) {
+        return next({ status: 400, message: "Order must inclue a deliverTo" });
+    }
+    
+    //check if mobileNumber exist
+    if (!mobileNumber) {
+        return next({ status: 400, message: "Order must include a mobileNumber" });
+    }
+
+    //check if dishes array exist and is an array with atleast one dish
+    if (!dishes || !Array.isArray(dishes) || dishes.length === 0) {
+        return next ({ status: 400, message: "Order must include at least one dish" });
+    }
+
+    //validate each dish in the dishes array
+    for (let i = 0; i < dishes.length; i++) {
+        const dish = dishes[i]; 
+        if (!dish.quantity || dish.quantity <= 0 || !Number.isInteger(dish.quantity)) {
+            return next({ status: 400, message: `Dish ${i} must have a quantity that is an interger greater than 0` })
+        }
+    }
+
+
+    //if all validations pass, move on the next middleware 
+    next();
+}
+
+
+
+
+
+
+//ERROR handling
+function errorHandler(err, req, res, next) {
+    const { status = 500, message = "Something went wrong!" } = err;
+    res.status(status).json({ error: message });
+};
 
 
 module.exports = {
