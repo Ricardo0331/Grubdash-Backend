@@ -15,7 +15,7 @@ function dishExists(req, res, next) {
 
 
 //List all dishes
-function list(req,res) {
+function list(req, res) {
     res.json ({ data: dishes });
 };
 
