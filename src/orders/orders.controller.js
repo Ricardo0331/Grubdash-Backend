@@ -38,14 +38,15 @@ function read(req, res) {
 };
 
 
-//update an existing order
+// Update an existing order
 function update(req, res) {
-    const updateOrder = {
-        ...res.locals.order,
-        ...req.body.data,
-    };
-    res.json({ data: updateOrder });
-};
+    const { orderId } = req.params;
+    const foundOrder = orders.find((order) => order.id === orderId);
+  
+    // Your validation and update logic here
+  
+    res.json({ data: foundOrder });
+  }
 
 
 
@@ -111,7 +112,20 @@ function validateOrderStatus(req, res, next) {
 }
 
 
-
+// Example validation middleware for PUT
+function validateOrderId(req, res, next) {
+    const { orderId } = req.params;
+    const { id } = req.body.data;
+  
+    if (orderId !== id) {
+      return next({
+        status: 400,
+        message: `Order id does not match route id. Order: ${id}, Route: ${orderId}.`,
+      });
+    }
+    next();
+  }
+  
 
 
 

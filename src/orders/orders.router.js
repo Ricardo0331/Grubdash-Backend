@@ -12,7 +12,7 @@ router
 router
     .route("/:orderId")
     .get(controller.orderExist, controller.read)
-    .put(validateOrderData, controller.create)
+    .put(validateOrderData, controller.update)
     .delete(controller.destroy)
 
 
