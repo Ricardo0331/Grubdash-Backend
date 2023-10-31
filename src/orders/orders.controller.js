@@ -43,10 +43,18 @@ function update(req, res) {
     const { orderId } = req.params;
     const foundOrder = orders.find((order) => order.id === orderId);
   
-    // Your validation and update logic here
+    const { data = {} } = req.body;
+    const { deliverTo, mobileNumber, dishes, status } = data;
+
+    // Update the order fields
+    if (deliverTo) foundOrder.deliverTo = deliverTo;
+    if (mobileNumber) foundOrder.mobileNumber = mobileNumber;
+    if (dishes) foundOrder.dishes = dishes;
+    if (status) foundOrder.status = status;
   
     res.json({ data: foundOrder });
-  }
+}
+
 
 
 
