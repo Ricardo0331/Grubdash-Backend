@@ -35,9 +35,25 @@ function create(req, res) {
   }
   
   // Read an existing dish
-  function read(req, res) {
+function read(req, res) {
     res.json({ data: res.locals.dish });
   }
+
+
+// Update an existing dish
+function update(req, res) {
+    const { dishId } = req.params;
+    const { data: { name, description, price, image_url } = {} } = req.body;
+  
+    const foundDish = res.locals.dish;
+    foundDish.name = name;
+    foundDish.description = description;
+    foundDish.price = price;
+    foundDish.image_url = image_url;
+  
+    res.json({ data: foundDish });
+  }
+
 
 
 // Validation middleware for creating a new dish
@@ -52,10 +68,30 @@ function validateDish(req, res, next) {
 
 
 
+// Validation middleware for updating an existing dish
+function validateDishUpdate(req, res, next) {
+    const { dishId } = req.params;
+    const { data: { id, name, description, price, image_url } = {} } = req.body;
+  
+    // All the validations for creating a new dish
+    if (!name || name === "") return next({ status: 400, message: "Dish must include a name" });
+    if (!description || description === "") return next({ status: 400, message: "Dish must include a description" });
+    if (price === undefined || price <= 0 || !Number.isInteger(price)) return next({ status: 400, message: "Dish must have a price that is an integer greater than 0" });
+    if (!image_url || image_url === "") return next({ status: 400, message: "Dish must include a image_url" });
+  
+    // Additional validations for updating a dish
+    if (id && id !== dishId) return next({ status: 400, message: `Dish id does not match route id. Dish: ${id}, Route: ${dishId}` });
+  
+    next();
+  }
+
+
 module.exports = {
     list,
-    validateDish,
     create,
     read,
+    update,
+    validateDish,
+    validateDishUpdate,
 
 };
