@@ -120,7 +120,7 @@ function validateOrderStatus(req, res, next) {
 }
 
 
-// Example validation middleware for PUT
+//validation middleware for PUT
 function validateOrderId(req, res, next) {
     const { orderId } = req.params;
     const { id } = req.body.data;

@@ -20,7 +20,42 @@ function list(req, res) {
 };
 
 
+// Create a new dish
+function create(req, res) {
+    const { data: { name, description, price, image_url } = {} } = req.body;
+    const newDish = {
+      id: nextId(),
+      name,
+      description,
+      price,
+      image_url,
+    };
+    dishes.push(newDish);
+    res.status(201).json({ data: newDish });
+  }
+  
+  // Read an existing dish
+  function read(req, res) {
+    res.json({ data: res.locals.dish });
+  }
+
+
+// Validation middleware for creating a new dish
+function validateDish(req, res, next) {
+    const { data: { name, description, price, image_url } = {} } = req.body;
+    if (!name || name === "") return next({ status: 400, message: "Dish must include a name" });
+    if (!description || description === "") return next({ status: 400, message: "Dish must include a description" });
+    if (price === undefined || price <= 0 || !Number.isInteger(price)) return next({ status: 400, message: "Dish must have a price that is an integer greater than 0" });
+    if (!image_url || image_url === "") return next({ status: 400, message: "Dish must include a image_url" });
+    next();
+  }
+
+
+
 module.exports = {
     list,
+    validateDish,
+    create,
+    read,
 
 };
