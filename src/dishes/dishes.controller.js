@@ -91,6 +91,7 @@ module.exports = {
     create,
     read,
     update,
+    dishExists,
     validateDish,
     validateDishUpdate,
 
