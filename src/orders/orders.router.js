@@ -5,7 +5,7 @@ const { validateOrderData } = require("./orders.controller")
 
 
 router
-    .router("/")
+    .route("/")
     .get(controller.list)
     .post(validateOrderData, controller.create);
 
